@@ -1,0 +1,6 @@
+{
+  "src": [
+    "pages/ChatDetailPage",
+    "pages/ContactDetailPage"
+  ]
+}

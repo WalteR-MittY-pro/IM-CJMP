@@ -1,0 +1,91 @@
+---
+description: CJMP 应用工程创建及代码目录结构
+globs:
+alwaysApply: false
+---
+
+# 应用工程结构介绍
+
+## CJMP 应用工程模版类型说明
+
+CJMP 支持创建 app、module、package 类型的工程，根据开发目标选择合适的工程类型。
+
+- app 工程是标准的CJMP应用，包含完整的 Cangjie UI 层和原生平台层，用于开发全新的独立 App。
+- module 工程专为混合开发设计，可将 CJMP 实现的组件或者页面嵌入到已有的原生项目中，作为项目的一部分运行。
+- package 工程用于封装可复用的功能，可以是纯 Cangjie 逻辑，也可以是统一了原生平台特定功能的 Cangjie API 接口，产出为依赖包，可在其他工程中共享和复用。
+  创建 package 工程时有 CJMP 和 native 两种壳工程选择：
+  - CJMP 壳工程：提供 Cangjie UI 入口，可直接调用 package 中 Cangjie 接口。
+  - native 壳工程：提供原生 UI 入口，通过桥接层调用 package 中 Cangjie 接口。
+
+## CJMP 应用工程目录结构说明
+
+以 CJMP 创建的 demo 工程为例，各种类型的工程模版目录结构如下：
+
+### app 工程
+
+``` bash
+demo/
+├── android/                                # Android 应用
+├── ios/                                    # iOS 应用
+├── lib/                                    # UI层源码
+|    ├── ability_mainability_entry.cj       # 主能力的扩展入口
+|    ├── ability_stage.cj                   # 应用生命周期阶段控制
+|    ├── cjpm.toml                          # 主项目依赖配置
+|    ├── index.cj                           # 应用总入口文件
+|    ├── main_ability.cj                    # 主业务核心功能逻辑入口
+|    ├── module_entry_entry.cj              # 模块化子功能注册入口
+|    └── ...
+├── ohos/                                   # HarmonyOS 应用
+└── ...
+```
+
+## 生成代码目录结构说明
+任何功能目录仅允许在cjmp工程的lib目录下建立一级目录,即在项目根目录中存在二级目录,如:在telegram_cjmp/lib目录下建立network目录,存放相关功能,但是和network相关功能不允许在network下再建立子包, 必须在同级的lib/network目录下新建目录放置代码文件。
+- 正确示例：
+```cangjie
+.
+├── lib
+│   └── network
+│   │   └── tcp.cj
+│   │   └── connection.cj
+│   └── udp
+│   │   └── udp.cj
+│   │   └── connection.cj
+│   ├── ability_mainability_entry.cj
+│   ├── ability_stage.cj
+│   ├── cjpm.toml
+│   ├── index.cj
+│   ├── main_ability.cj
+│   └── module_entry_entry.cj
+```
+- 错误示例
+```cangjie
+.
+├── lib
+│   └── network
+│   │   ├── tcp.cj
+│   │   ├── connection.cj
+│   │   ├── udp
+│   │   │   ├── udp.cj
+│   │   │   ├── connection.cj
+│   ├── ability_mainability_entry.cj
+│   ├── ability_stage.cj
+│   ├── cjpm.toml
+│   ├── index.cj
+│   ├── main_ability.cj
+│   └── module_entry_entry.cj
+```
+
+## CJMP 工程构建运行
+### 构建 CJMP 工程
+
+#### 验证或构建 app 类型工程
+同样可以
+```cangjie
+  keels build apk/ios/hap # 根据不同设备使用不同的命令，android设备对应apk，ios设备对应ios，harmonyos设备对应hap
+```
+
+### 运行 CJMP 工程
+```cangjie
+  keels run # 根据上一步构建的产物，运行对应的设备，不需要参数
+```
